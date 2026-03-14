@@ -101,7 +101,7 @@ INSERT INTO SALE (VIN, Emp_ID, Customer_ID, Sale_Date, Amount, Payment_Method) V
 
 -- Admin user (password: admin123)
 INSERT INTO users (username, password, role, emp_id) VALUES
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1);
+('admin', '$2y$12$J1IAVBB8xWG8qZc1ub81Leanm3f7HNtLo3uPGzHA2Wi1CiB4fUCqq', 'admin', 1);
 -- Staff user (password: staff123)
 INSERT INTO users (username, password, role, emp_id) VALUES
-('staff1', '$2y$10$TKh8H1.PkT6G7A1E1pPtmuiF1z7EcFbTlTdpgcO.Eqg9lY8tsMey', 'staff', 2);
+('staff1', '$2y$12$/k3BAHrw18PS5NQQMRF3WuaVV.vI.jV1wg5GGZBapd/AtDr1NxQ/m', 'staff', 2);
