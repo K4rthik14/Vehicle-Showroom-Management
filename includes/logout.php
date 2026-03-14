@@ -1,5 +1,6 @@
 <?php
 session_start();
+define('BASE_URL', '/vsms/');
 session_destroy();
-header("Location: ../index.php");
+header("Location: " . BASE_URL . "index.php");
 exit();

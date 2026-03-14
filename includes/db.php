@@ -1,7 +1,7 @@
 <?php
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_USER', 'vsms_user');
+define('DB_PASS', 'vsms_pass_2026');
 define('DB_NAME', 'vsms');
 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);

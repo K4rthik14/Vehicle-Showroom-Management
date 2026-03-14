@@ -2,215 +2,219 @@
 
 🚗 Vehicle Showroom Management System (LAMP Stack)
 
-A web-based Vehicle Showroom Management System developed using the LAMP stack (Linux, Apache, MySQL, PHP).
-The system digitalizes showroom operations such as vehicle inventory management, customer handling, bookings, sales, payments, and service records.
+A web-based Vehicle Showroom Management System developed using the LAMP stack (Linux, Apache, MySQL/MariaDB, PHP).
+The system digitalizes showroom operations such as vehicle inventory management, customer handling, sales, and staff records.
 
-📌 Project Overview
+## 📌 Project Overview
 
-Managing a vehicle showroom involves handling multiple operations like tracking available vehicles, managing customer bookings, recording sales and payments, and maintaining post-sale service history.
+Managing a vehicle showroom involves handling multiple operations like tracking available vehicles, managing customer records, recording sales and payments, and managing staff.
 This project provides a centralized web application to efficiently manage all these activities using a relational database.
 
 The system is designed with real-world business workflows in mind and follows proper DBMS normalization principles.
 
-🛠️ Tech Stack
-Layer	Technology
-Operating System	Linux
-Web Server	Apache
-Backend	PHP
-Database	MySQL
-Frontend	HTML, CSS, JavaScript
-Architecture	LAMP
-🎯 Features
-🔹 Inventory Management
-
-Add and manage vehicle details
-
-Track available stock
-
-Link vehicles with suppliers
-
-🔹 Customer Management
-
-Store customer personal and contact details
-
-Maintain government ID information
-
-🔹 Vehicle Booking
-
-Allow customers to book vehicles
-
-Track booking status (Booked / Cancelled / Converted)
-
-🔹 Sales Management
-
-Record vehicle sales
-
-Handle walk-in and booking-based sales
-
-Assign sales staff to each sale
-
-🔹 Payment Management
-
-Support advance and partial payments
-
-Track payment methods and payment history
-
-🔹 Service Management
-
-Service booking for vehicles
-
-Record service details and costs
-
-Track next service due date
-
-🔹 Staff Management
-
-Manage showroom staff
-
-Assign staff to sales and services
-
-🗄️ Database Design
-
-The database is designed using a normalized relational schema with the following core entities:
-
-Supplier
-
-Vehicle
-
-Customer
-
-Staff
-
-Vehicle_Booking
-
-Sales
-
-Payment
-
-Service_Booking
-
-Service
-
-The design ensures:
-
-Data consistency using primary and foreign keys
-
-One-to-many relationships where applicable
-
-Separation of concerns (sales vs payments, booking vs service)
-
-🔗 Entity Relationship Summary
-
-One supplier can supply many vehicles
-
-A customer can book and purchase multiple vehicles
-
-A sale can have multiple payments
-
-Staff members handle sales and services
-
-Service records are maintained for customer-owned vehicles
-
-⚙️ Installation & Setup
-1️⃣ Prerequisites
-
-Linux OS
-
-Apache Web Server
-
-MySQL Server
-
-PHP (7.x or above)
-
-Browser (Chrome / Firefox)
-
-2️⃣ Clone the Repository
-git clone https://github.com/your-username/vehicle-showroom-management.git
-
-3️⃣ Configure Database
-
-Create a MySQL database
-
-Import the provided SQL file:
-
-mysql -u root -p showroom_db < database.sql
-
-4️⃣ Configure Apache
-
-Place project folder inside:
-
-/var/www/html/
-
-
-Update database credentials in config.php
-
-5️⃣ Run the Application
-
-Open browser and navigate to:
-
-http://localhost/vehicle-showroom-management
-
-📂 Project Structure
-vehicle-showroom-management/
+## 🛠️ Tech Stack
+
+| Layer            | Technology                |
+|------------------|---------------------------|
+| Operating System | CachyOS (Arch-based Linux)|
+| Web Server       | Apache (httpd)            |
+| Backend          | PHP 8.x                  |
+| Database         | MariaDB                   |
+| Frontend         | HTML, CSS, Bootstrap 5    |
+| Architecture     | LAMP                      |
+
+## 🎯 Features
+
+### 🔹 Vehicle Inventory
+- Add, edit, and delete vehicles
+- Track stock quantity and status (Available/Sold)
+- Link vehicles with suppliers
+
+### 🔹 Customer Management
+- Store customer personal and contact details
+- Edit and delete customer records
+
+### 🔹 Sales Management
+- Record vehicle sales with date, amount, and payment method
+- Automatic stock update on sale
+- Restore stock on sale deletion
+
+### 🔹 Staff Management
+- Manage showroom staff records
+- Track designation and date of joining
+
+### 🔹 Supplier Management
+- Manage vehicle suppliers
+- View vehicle count per supplier
+
+### 🔹 User Accounts
+- Admin and staff roles
+- Session-based authentication
+- Admin-only user management
+
+## 📂 Project Structure
+
+```
+Vehicle-Showroom-Management/
 │
-├── database/
-│   └── database.sql
+├── includes/               # Shared PHP components
+│   ├── auth.php            # Authentication & role checks
+│   ├── db.php              # Database connection config
+│   ├── header.php          # Shared layout (sidebar, nav, CSS)
+│   ├── footer.php          # Page footer + scripts
+│   └── logout.php          # Session logout handler
 │
-├── config/
-│   └── config.php
+├── pages/                  # Application pages
+│   ├── dashboard.php       # Dashboard with stats & recent sales
+│   ├── vehicles.php        # Vehicle CRUD
+│   ├── customers.php       # Customer CRUD
+│   ├── sales.php           # Sales management
+│   ├── staff.php           # Staff CRUD
+│   ├── suppliers.php       # Supplier CRUD
+│   └── users.php           # User account management (admin)
 │
-├── public/
-│   ├── index.php
-│   ├── login.php
-│   └── dashboard.php
-│
-├── assets/
-│   ├── css/
-│   └── js/
-│
-├── modules/
-│   ├── vehicles/
-│   ├── customers/
-│   ├── sales/
-│   ├── payments/
-│   └── service/
-│
+├── index.php               # Login page (entry point)
+├── vsms_setup.sql          # Database schema + seed data
+├── setup.sh                # Automated setup script for CachyOS
 └── README.md
+```
 
-🔐 Security Considerations
+## ⚙️ Installation & Setup (CachyOS / Arch Linux)
 
-Input validation for forms
+### Prerequisites
 
-Prepared statements to prevent SQL Injection
+Ensure these packages are installed:
 
-Basic session-based authentication
+```bash
+sudo pacman -S apache php php-apache mariadb
+```
 
-📈 Future Enhancements
+Enable and start the services:
 
-Role-based access control (Admin / Sales / Service)
+```bash
+sudo systemctl enable --now httpd
+sudo systemctl enable --now mariadb
+sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+```
 
-Analytics dashboard
+Configure PHP with Apache — edit `/etc/httpd/conf/httpd.conf`:
 
-Invoice generation
+```apache
+LoadModule php_module modules/libphp.so
+Include conf/extra/php_module.conf
+```
 
-Email/SMS service reminders
+Enable mysqli in `/etc/php/php.ini`:
 
-REST API support
+```ini
+extension=mysqli
+```
 
-🎓 Academic Relevance
+Restart Apache:
 
-This project demonstrates:
+```bash
+sudo systemctl restart httpd
+```
 
-Practical implementation of DBMS concepts
+### Quick Setup
 
-Normalization and relational integrity
+Run the setup script from the project directory:
 
-Real-world application of LAMP architecture
+```bash
+chmod +x setup.sh
+./setup.sh
+```
 
-Full-stack web development fundamentals
+This will:
+1. ✅ Check that Apache and MariaDB are running
+2. ✅ Create the `vsms` database
+3. ✅ Create a dedicated `vsms_user` with password authentication
+4. ✅ Import the schema and seed data
+5. ✅ Deploy the project to `/srv/http/vsms/`
+6. ✅ Update database credentials
 
-👨‍💻 Author
+### Manual Setup
+
+If you prefer manual setup:
+
+1. **Create the database user:**
+   ```bash
+   sudo mariadb -e "
+       CREATE DATABASE IF NOT EXISTS vsms CHARACTER SET utf8mb4;
+       CREATE USER IF NOT EXISTS 'vsms_user'@'localhost' IDENTIFIED BY 'vsms_pass_2026';
+       GRANT ALL PRIVILEGES ON vsms.* TO 'vsms_user'@'localhost';
+       FLUSH PRIVILEGES;
+   "
+   ```
+
+2. **Import the schema:**
+   ```bash
+   mariadb -u vsms_user -p'vsms_pass_2026' vsms < vsms_setup.sql
+   ```
+
+3. **Deploy to Apache document root:**
+   ```bash
+   sudo cp -r . /srv/http/vsms
+   sudo chown -R http:http /srv/http/vsms
+   ```
+
+4. **Open in browser:**
+   ```
+   http://localhost/vsms/
+   ```
+
+### Login Credentials
+
+| Username | Password   | Role  |
+|----------|------------|-------|
+| admin    | admin123   | Admin |
+| staff1   | staff123   | Staff |
+
+## 🗄️ Database Design
+
+The database uses a normalized relational schema with the following tables:
+
+| Table     | Purpose                          |
+|-----------|----------------------------------|
+| users     | Login credentials and roles      |
+| CUSTOMER  | Customer personal details        |
+| STAFF     | Employee records                 |
+| SUPPLIER  | Vehicle supplier information     |
+| VEHICLE   | Vehicle inventory                |
+| SALE      | Sales transactions               |
+
+### Key Relationships
+
+- One **supplier** can supply many **vehicles**
+- A **customer** can purchase multiple **vehicles**
+- A **staff member** handles **sales**
+- Each **sale** links a vehicle, customer, and staff member
+
+## 🔐 Security Considerations
+
+- Prepared statements to prevent SQL injection
+- Password hashing with `password_hash()` / `password_verify()`
+- Session-based authentication with role checks
+- HTML output escaping with `htmlspecialchars()`
+- Dedicated database user (not root)
+
+## ⚠️ CachyOS / Arch Notes
+
+- Apache document root is `/srv/http/` (not `/var/www/html/`)
+- MariaDB uses unix_socket authentication for root — PHP cannot connect as root with empty password
+- The setup script creates a dedicated `vsms_user` with password-based authentication
+- PHP module is loaded via `libphp.so` (not `mod_php`)
+
+## 📈 Future Enhancements
+
+- Role-based access control (expand beyond admin/staff)
+- Analytics dashboard with charts
+- Invoice/receipt generation
+- Email/SMS notifications
+- REST API support
+- Vehicle booking system
+
+## 👨‍💻 Author
 
 Karthik S
 B.Tech CSE
-
