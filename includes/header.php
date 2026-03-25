@@ -1,55 +1,54 @@
-<?php if (session_status() === PHP_SESSION_NONE)
-    session_start(); ?>
+<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSMS — <?= htmlspecialchars($pageTitle ?? 'Dashboard')?></title>
+    <title>VSMS - <?= htmlspecialchars($pageTitle ?? 'Dashboard')?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-dark: #3730a3;
-            --accent: #7c3aed;
-            --bg: #f1f5f9;
-            --sidebar-bg: #1e1b4b;
-            --sidebar-text: #c7d2fe;
-            --sidebar-active: #818cf8;
+            --primary: #0f766e;
+            --primary-light: #14b8a6;
+            --primary-dark: #115e59;
+            --accent: #0ea5a4;
+            --bg: #f4f7fb;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #cbd5e1;
+            --sidebar-active: #2dd4bf;
             --card-bg: #ffffff;
-            --text: #1e293b;
+            --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg);
+            background: radial-gradient(circle at top right, #d1fae5 0%, #f4f7fb 38%, #eef2ff 100%);
             color: var(--text);
             min-height: 100vh;
             display: flex;
         }
 
-        /* ── Sidebar ─────────────────────────────── */
         .sidebar {
             width: 260px;
             min-height: 100vh;
-            background: var(--sidebar-bg);
+            background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
             padding: 1.5rem 0;
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             z-index: 100;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
         }
 
         .sidebar-brand {
@@ -61,10 +60,13 @@
             text-decoration: none;
         }
         .sidebar-brand .brand-icon {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--primary-light), var(--accent));
             border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
         }
         .sidebar-brand h1 {
@@ -75,12 +77,12 @@
             margin: 0;
         }
         .sidebar-brand span {
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             color: var(--sidebar-text);
-            opacity: 0.7;
+            opacity: 0.75;
             display: block;
             margin-top: 2px;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
         }
 
         .nav-section {
@@ -89,7 +91,7 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: var(--sidebar-text);
-            opacity: 0.5;
+            opacity: 0.55;
             padding: 0 1.25rem;
             margin: 1.25rem 0 0.5rem;
         }
@@ -98,7 +100,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.6rem 1.25rem;
+            padding: 0.62rem 1.25rem;
             color: var(--sidebar-text);
             text-decoration: none;
             font-size: 0.88rem;
@@ -107,11 +109,11 @@
             transition: all 0.2s;
         }
         .nav-link:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.08);
             color: #fff;
         }
         .nav-link.active {
-            background: rgba(99,102,241,0.15);
+            background: rgba(45,212,191,0.14);
             color: var(--sidebar-active);
             border-left-color: var(--sidebar-active);
             font-weight: 600;
@@ -130,10 +132,13 @@
             margin-bottom: 0.75rem;
         }
         .sidebar-footer .user-avatar {
-            width: 34px; height: 34px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #fff;
             font-weight: 700;
             font-size: 0.85rem;
@@ -144,9 +149,9 @@
             color: #fff;
         }
         .sidebar-footer .user-role {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: var(--sidebar-text);
-            opacity: 0.7;
+            opacity: 0.75;
         }
         .sidebar-footer .btn-logout {
             display: flex;
@@ -156,23 +161,24 @@
             width: 100%;
             padding: 0.45rem;
             border-radius: 8px;
-            background: rgba(239,68,68,0.12);
-            color: #f87171;
+            background: rgba(220,38,38,0.12);
+            color: #fca5a5;
             border: none;
             font-size: 0.82rem;
             font-weight: 600;
             text-decoration: none;
             transition: background 0.2s;
         }
-        .sidebar-footer .btn-logout:hover { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .sidebar-footer .btn-logout:hover { background: rgba(220,38,38,0.2); color: #fecaca; }
 
-        /* ── Mobile Hamburger ────────────────────── */
         .sidebar-toggle {
             display: none;
             position: fixed;
-            top: 1rem; left: 1rem;
+            top: 1rem;
+            left: 1rem;
             z-index: 200;
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             background: var(--sidebar-bg);
             color: #fff;
@@ -184,11 +190,10 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(2,6,23,0.56);
             z-index: 99;
         }
 
-        /* ── Main Content ────────────────────────── */
         .main-content {
             margin-left: 260px;
             flex: 1;
@@ -198,7 +203,8 @@
         }
 
         .top-bar {
-            background: var(--card-bg);
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
             border-bottom: 1px solid var(--border);
             padding: 0.9rem 1.5rem;
             display: flex;
@@ -212,6 +218,7 @@
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--text);
+            margin: 0;
         }
         .top-bar .breadcrumb {
             font-size: 0.78rem;
@@ -224,7 +231,6 @@
             flex: 1;
         }
 
-        /* ── Cards ────────────────────────────────── */
         .card-vsms {
             background: var(--card-bg);
             border-radius: 14px;
@@ -232,7 +238,7 @@
             overflow: hidden;
             transition: box-shadow 0.2s;
         }
-        .card-vsms:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .card-vsms:hover { box-shadow: 0 4px 20px rgba(15,23,42,0.08); }
         .card-vsms .card-header {
             background: transparent;
             border-bottom: 1px solid var(--border);
@@ -242,8 +248,8 @@
             color: var(--text);
         }
         .card-vsms .card-body { padding: 1.15rem; }
+        .card-vsms .card-body.p-0 { overflow-x: auto; }
 
-        /* ── Stat Cards ──────────────────────────── */
         .stat-card {
             border-radius: 14px;
             padding: 1.25rem;
@@ -253,15 +259,20 @@
         .stat-card::after {
             content: '';
             position: absolute;
-            top: -30%; right: -15%;
-            width: 120px; height: 120px;
+            top: -30%;
+            right: -15%;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: rgba(255,255,255,0.08);
         }
         .stat-icon {
-            width: 42px; height: 42px;
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
             margin-bottom: 0.75rem;
         }
@@ -277,10 +288,10 @@
             font-weight: 500;
         }
 
-        /* ── Tables ──────────────────────────────── */
         .table-vsms {
             font-size: 0.85rem;
             margin-bottom: 0;
+            min-width: 720px;
         }
         .table-vsms thead th {
             background: #f8fafc;
@@ -298,16 +309,14 @@
             vertical-align: middle;
             border-bottom: 1px solid #f1f5f9;
         }
-        .table-vsms tbody tr:hover { background: #fafbfe; }
+        .table-vsms tbody tr:hover { background: #f8fafc; }
 
-        /* ── Badges ──────────────────────────────── */
         .badge-available { background: #dcfce7; color: #166534; font-weight: 600; }
         .badge-sold { background: #fef2f2; color: #991b1b; font-weight: 600; }
         .badge-cash { background: #dcfce7; color: #166534; }
         .badge-card { background: #dbeafe; color: #1e40af; }
         .badge-upi { background: #fef3c7; color: #92400e; }
 
-        /* ── Buttons ─────────────────────────────── */
         .btn-primary-vsms {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             border: none;
@@ -320,7 +329,7 @@
         }
         .btn-primary-vsms:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(79,70,229,0.3);
+            box-shadow: 0 4px 14px rgba(15,118,110,0.28);
             color: #fff;
         }
         .btn-outline-vsms {
@@ -335,7 +344,6 @@
         }
         .btn-outline-vsms:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* ── Forms ────────────────────────────────── */
         .form-label {
             font-weight: 600;
             font-size: 0.78rem;
@@ -343,18 +351,19 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border-radius: 8px;
             border: 1.5px solid var(--border);
             font-size: 0.88rem;
             padding: 0.55rem 0.85rem;
         }
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
         }
 
-        /* ── Empty State ─────────────────────────── */
         .empty-state {
             padding: 3rem;
             text-align: center;
@@ -363,33 +372,35 @@
         .empty-state i { font-size: 2.5rem; opacity: 0.3; }
         .empty-state p { margin-top: 0.75rem; font-size: 0.88rem; }
 
-        /* ── Alert ────────────────────────────────── */
         .alert-dismissible {
             border-radius: 10px;
             font-size: 0.85rem;
             border: none;
         }
 
-        /* ── Responsive ──────────────────────────── */
         @media (max-width: 991px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
             .sidebar-overlay.active { display: block; }
             .main-content { margin-left: 0; }
-            .top-bar { padding-left: 3.5rem; }
+            .top-bar {
+                padding-left: 3.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.15rem;
+            }
+            .page-body { padding: 1rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- Mobile Toggle -->
 <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
     <i class="bi-list"></i>
 </button>
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<!-- Sidebar -->
 <aside class="sidebar">
     <a href="<?= BASE_URL?>pages/dashboard.php" class="sidebar-brand">
         <div class="brand-icon">🚗</div>
@@ -426,8 +437,7 @@
     <a href="<?= BASE_URL?>pages/users.php" class="nav-link <?=($pageTitle ?? '') === 'User Accounts' ? 'active' : ''?>">
         <i class="bi-shield-lock-fill"></i> Users
     </a>
-    <?php
-endif; ?>
+    <?php endif; ?>
 
     <div class="sidebar-footer">
         <div class="user-info">
@@ -443,7 +453,6 @@ endif; ?>
     </div>
 </aside>
 
-<!-- Main Content -->
 <div class="main-content">
     <div class="top-bar">
         <div>
@@ -460,4 +469,13 @@ function toggleSidebar() {
     document.querySelector('.sidebar').classList.toggle('open');
     document.querySelector('.sidebar-overlay').classList.toggle('active');
 }
+
+function closeSidebar() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.querySelector('.sidebar-overlay').classList.remove('active');
+}
+
+document.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', closeSidebar);
+});
 </script>
