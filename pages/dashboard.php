@@ -7,57 +7,66 @@ requireLogin();
 
 $pageTitle = 'Dashboard';
 
-// Stats
-$totalVehicles  = $conn->query("SELECT COUNT(*) FROM VEHICLE")->fetch_row()[0];
-$availVehicles  = $conn->query("SELECT COUNT(*) FROM VEHICLE WHERE Status='Available'")->fetch_row()[0];
-$totalCustomers = $conn->query("SELECT COUNT(*) FROM CUSTOMER")->fetch_row()[0];
-$totalSales     = $conn->query("SELECT COUNT(*) FROM SALE")->fetch_row()[0];
-$totalRevenue   = $conn->query("SELECT COALESCE(SUM(Amount),0) FROM SALE")->fetch_row()[0];
-$totalStaff     = $conn->query("SELECT COUNT(*) FROM STAFF")->fetch_row()[0];
+// -------------------------
+// Query dashboard statistics
+// -------------------------
+$totalVehicles = (int) $conn->query("SELECT COUNT(*) FROM VEHICLE")->fetch_row()[0];
+$availableVehicles = (int) $conn->query("SELECT COUNT(*) FROM VEHICLE WHERE Status='Available'")->fetch_row()[0];
+$totalCustomers = (int) $conn->query("SELECT COUNT(*) FROM CUSTOMER")->fetch_row()[0];
+$totalSales = (int) $conn->query("SELECT COUNT(*) FROM SALE")->fetch_row()[0];
+$totalRevenue = (float) $conn->query("SELECT COALESCE(SUM(Amount),0) FROM SALE")->fetch_row()[0];
+$totalStaff = (int) $conn->query("SELECT COUNT(*) FROM STAFF")->fetch_row()[0];
 
-// Recent sales
-$recentSales = $conn->query("
-    SELECT s.Sale_ID, s.Sale_Date, s.Amount, s.Payment_Method,
-           CONCAT(c.Fname,' ',c.Lname) AS customer,
-           v.Model_Name
-    FROM SALE s
-    JOIN CUSTOMER c ON s.Customer_ID = c.Customer_ID
-    JOIN VEHICLE v ON s.VIN = v.VIN
-    ORDER BY s.Sale_Date DESC LIMIT 5
+$recentSales = $conn->query("\
+    SELECT s.Sale_ID, s.Sale_Date, s.Amount, s.Payment_Method,\
+           CONCAT(c.Fname,' ',c.Lname) AS customer,\
+           v.Model_Name\
+    FROM SALE s\
+    JOIN CUSTOMER c ON s.Customer_ID = c.Customer_ID\
+    JOIN VEHICLE v ON s.VIN = v.VIN\
+    ORDER BY s.Sale_Date DESC LIMIT 5\
 ");
+
+$summaryCards = [
+    [
+        'icon' => '🚗',
+        'label' => 'Total Vehicles',
+        'value' => $totalVehicles,
+        'gradient' => 'linear-gradient(135deg,#0f766e,#0ea5a4)',
+    ],
+    [
+        'icon' => '✅',
+        'label' => 'Available Now',
+        'value' => $availableVehicles,
+        'gradient' => 'linear-gradient(135deg,#16a34a,#15803d)',
+    ],
+    [
+        'icon' => '👥',
+        'label' => 'Customers',
+        'value' => $totalCustomers,
+        'gradient' => 'linear-gradient(135deg,#0284c7,#0369a1)',
+    ],
+    [
+        'icon' => '💰',
+        'label' => 'Total Revenue',
+        'value' => 'Rs.' . number_format($totalRevenue),
+        'gradient' => 'linear-gradient(135deg,#d97706,#b45309)',
+    ],
+];
 
 require_once '../includes/header.php';
 ?>
 
 <div class="row g-3 mb-4">
+    <?php foreach ($summaryCards as $card): ?>
     <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;">
-            <div class="stat-icon" style="background:rgba(255,255,255,0.2);">🚗</div>
-            <div class="stat-val"><?= $totalVehicles ?></div>
-            <div class="stat-label">Total Vehicles</div>
+        <div class="stat-card" style="background:<?= $card['gradient'] ?>;color:#fff;">
+            <div class="stat-icon" style="background:rgba(255,255,255,0.2);"><?= $card['icon'] ?></div>
+            <div class="stat-val"><?= $card['value'] ?></div>
+            <div class="stat-label"><?= $card['label'] ?></div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;">
-            <div class="stat-icon" style="background:rgba(255,255,255,0.2);">✅</div>
-            <div class="stat-val"><?= $availVehicles ?></div>
-            <div class="stat-label">Available Now</div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;">
-            <div class="stat-icon" style="background:rgba(255,255,255,0.2);">👥</div>
-            <div class="stat-val"><?= $totalCustomers ?></div>
-            <div class="stat-label">Customers</div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;">
-            <div class="stat-icon" style="background:rgba(255,255,255,0.2);">💰</div>
-            <div class="stat-val">₹<?= number_format($totalRevenue/100000, 1) ?>L</div>
-            <div class="stat-label">Total Revenue</div>
-        </div>
-    </div>
+    <?php endforeach; ?>
 </div>
 
 <div class="row g-3">
@@ -70,18 +79,25 @@ require_once '../includes/header.php';
             <div class="card-body p-0">
                 <?php if ($recentSales->num_rows > 0): ?>
                 <table class="table table-vsms mb-0">
-                    <thead><tr>
-                        <th>Sale ID</th><th>Customer</th><th>Vehicle</th><th>Date</th><th>Amount</th><th>Payment</th>
-                    </tr></thead>
-                    <tbody>
-                    <?php while ($row = $recentSales->fetch_assoc()): ?>
+                    <thead>
                         <tr>
-                            <td><span style="font-family:'DM Mono',monospace;color:#6366f1;">#<?= $row['Sale_ID'] ?></span></td>
-                            <td><?= htmlspecialchars($row['customer']) ?></td>
-                            <td><?= htmlspecialchars($row['Model_Name']) ?></td>
-                            <td><?= date('d M Y', strtotime($row['Sale_Date'])) ?></td>
-                            <td><strong>₹<?= number_format($row['Amount']) ?></strong></td>
-                            <td><span class="badge badge-<?= strtolower($row['Payment_Method']) ?>"><?= $row['Payment_Method'] ?></span></td>
+                            <th>Sale ID</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php while ($sale = $recentSales->fetch_assoc()): ?>
+                        <tr>
+                            <td><span style="font-family:'DM Mono',monospace;color:#0f766e;">#<?= $sale['Sale_ID'] ?></span></td>
+                            <td><?= htmlspecialchars($sale['customer']) ?></td>
+                            <td><?= htmlspecialchars($sale['Model_Name']) ?></td>
+                            <td><?= date('d M Y', strtotime($sale['Sale_Date'])) ?></td>
+                            <td><strong>Rs.<?= number_format($sale['Amount']) ?></strong></td>
+                            <td><span class="badge badge-<?= strtolower($sale['Payment_Method']) ?>"><?= $sale['Payment_Method'] ?></span></td>
                         </tr>
                     <?php endwhile; ?>
                     </tbody>
@@ -92,6 +108,7 @@ require_once '../includes/header.php';
             </div>
         </div>
     </div>
+
     <div class="col-lg-4">
         <div class="card-vsms h-100">
             <div class="card-header"><i class="bi-bar-chart me-2 text-primary"></i>Quick Stats</div>
@@ -106,11 +123,11 @@ require_once '../includes/header.php';
                 </div>
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                     <span class="text-muted" style="font-size:.85rem;">Vehicles Sold</span>
-                    <strong><?= $totalVehicles - $availVehicles ?></strong>
+                    <strong><?= $totalVehicles - $availableVehicles ?></strong>
                 </div>
                 <div class="d-flex justify-content-between align-items-center py-2">
-                    <span class="text-muted" style="font-size:.85rem;">Avg Sale Value</span>
-                    <strong>₹<?= $totalSales ? number_format($totalRevenue/$totalSales) : '0' ?></strong>
+                    <span class="text-muted" style="font-size:.85rem;">Average Sale Value</span>
+                    <strong>Rs.<?= $totalSales ? number_format($totalRevenue / $totalSales) : '0' ?></strong>
                 </div>
             </div>
         </div>
