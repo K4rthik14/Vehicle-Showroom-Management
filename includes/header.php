@@ -378,6 +378,110 @@
             border: none;
         }
 
+        /* --- Vehicle Card UI --- */
+        .vehicle-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .vehicle-card:hover {
+            box-shadow: 0 12px 24px rgba(15,23,42,0.06);
+            transform: translateY(-4px);
+            border-color: var(--primary-light);
+        }
+        .vehicle-card .v-image {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 1.25rem;
+            margin-top: 0.5rem;
+        }
+        .vehicle-card .v-brand {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+        }
+        .vehicle-card .v-model {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        .vehicle-card .v-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+        .vehicle-card .v-stats {
+            display: flex;
+            gap: 1.2rem;
+            padding-top: 1rem;
+            margin-top: auto;
+            border-top: 1px solid #f1f5f9;
+        }
+        .vehicle-card .v-stat {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+        }
+        .vehicle-card .v-badge {
+            position: absolute;
+            top: 1.25rem;
+            left: 1.25rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .brand-filters {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .brand-filters::-webkit-scrollbar { display: none; }
+        .brand-btn {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .brand-btn:hover, .brand-btn.active {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(15,118,110,0.12);
+            color: var(--primary);
+            cursor: pointer;
+        }
+        /* ----------------------- */
+
         @media (max-width: 991px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
