@@ -8,6 +8,7 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
+
 $loginError = '';
 
 // Handle login form submission.

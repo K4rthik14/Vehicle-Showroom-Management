@@ -1,14 +1,15 @@
 <?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'vsms_user');
-define('DB_PASS', 'vsms_pass_2026');
-define('DB_NAME', 'vsms');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$host = "localhost";
+$user = "root";
+$pass = "root123";  // <-- change if different
+$db   = "vsms";
+
+$conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    die("<div class='alert alert-danger m-4'>Database Connection Failed: " . $conn->connect_error . "</div>");
+    die("DB ERROR: " . $conn->connect_error);
 }
-
-$conn->set_charset("utf8mb4");
 ?>
