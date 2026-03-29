@@ -17,14 +17,19 @@ $totalSales = (int) $conn->query("SELECT COUNT(*) FROM SALE")->fetch_row()[0];
 $totalRevenue = (float) $conn->query("SELECT COALESCE(SUM(Amount),0) FROM SALE")->fetch_row()[0];
 $totalStaff = (int) $conn->query("SELECT COUNT(*) FROM STAFF")->fetch_row()[0];
 
-$recentSales = $conn->query("\
-    SELECT s.Sale_ID, s.Sale_Date, s.Amount, s.Payment_Method,\
-           CONCAT(c.Fname,' ',c.Lname) AS customer,\
-           v.Model_Name\
-    FROM SALE s\
-    JOIN CUSTOMER c ON s.Customer_ID = c.Customer_ID\
-    JOIN VEHICLE v ON s.VIN = v.VIN\
-    ORDER BY s.Sale_Date DESC LIMIT 5\
+$recentSales = $conn->query("
+    SELECT 
+        s.Sale_ID,
+        s.Sale_Date,
+        s.Amount,
+        s.Payment_Method,
+        CONCAT(c.Fname, ' ', c.Lname) AS customer,
+        v.Model_Name
+    FROM SALE s
+    JOIN CUSTOMER c ON s.Customer_ID = c.Customer_ID
+    JOIN VEHICLE v ON s.VIN = v.VIN
+    ORDER BY s.Sale_Date DESC
+    LIMIT 5
 ");
 
 $summaryCards = [

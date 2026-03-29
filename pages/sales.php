@@ -85,16 +85,16 @@ if (isset($_GET['edit'])) {
     $editSale = $conn->query("SELECT * FROM SALE WHERE Sale_ID=$editSaleId")->fetch_assoc();
 }
 
-$sales = $conn->query("\
-    SELECT s.*,\
-           CONCAT(c.Fname,' ',c.Lname) AS customer_name,\
-           st.Name AS staff_name,\
-           v.Model_Name\
-    FROM SALE s\
-    JOIN CUSTOMER c ON s.Customer_ID=c.Customer_ID\
-    JOIN STAFF st ON s.Emp_ID=st.Emp_ID\
-    JOIN VEHICLE v ON s.VIN=v.VIN\
-    ORDER BY s.Sale_Date DESC, s.Sale_ID DESC\
+$sales = $conn->query("
+    SELECT s.*,
+           CONCAT(c.Fname,' ',c.Lname) AS customer_name,
+           st.Name AS staff_name,
+           v.Model_Name
+    FROM SALE s
+    JOIN CUSTOMER c ON s.Customer_ID=c.Customer_ID
+    JOIN STAFF st ON s.Emp_ID=st.Emp_ID
+    JOIN VEHICLE v ON s.VIN=v.VIN
+    ORDER BY s.Sale_Date DESC, s.Sale_ID DESC
 ");
 
 $availableVehicles = $conn->query("SELECT VIN, Model_Name FROM VEHICLE WHERE Status='Available' ORDER BY Model_Name");
