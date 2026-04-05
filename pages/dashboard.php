@@ -57,7 +57,7 @@ $summaryCards = [
     [
         'icon' => '💰',
         'label' => 'Total Revenue',
-        'value' => 'Rs.' . number_format($totalRevenue),
+        'value' => '₹' . number_format($totalRevenue),
         'color' => '#d97706',
         'bg' => '#fef3c7',
     ],
@@ -122,7 +122,7 @@ endforeach; ?>
                             <td>
                                 <?= date('d M Y', strtotime($sale['Sale_Date']))?>
                             </td>
-                            <td><strong>Rs.
+                            <td><strong>₹
                                     <?= number_format($sale['Amount'])?>
                                 </strong></td>
                             <td><span class="badge badge-<?= strtolower($sale['Payment_Method'])?>">
@@ -168,7 +168,7 @@ endif; ?>
                 </div>
                 <div class="d-flex justify-content-between align-items-center py-2">
                     <span class="text-muted" style="font-size:.85rem;">Average Sale Value</span>
-                    <strong>Rs.
+                    <strong>₹
                         <?= $totalSales ? number_format($totalRevenue / $totalSales) : '0'?>
                     </strong>
                 </div>
