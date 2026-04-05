@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         else {
             $stmt = $conn->prepare("INSERT INTO VEHICLE(VIN,Model_Name,Status,Fuel_type,Stock_Quantity,Supplier_ID) VALUES(?,?,?,?,?,?)");
-            $stmt->bind_param("sssiii", $vin, $model, $status, $fuel, $qty, $sup_id);
+            $stmt->bind_param("ssssii", $vin, $model, $status, $fuel, $qty, $sup_id);
         }
         if ($stmt->execute()) {
             $msg = '<div class="alert alert-success alert-dismissible">Vehicle ' . ($editing ? 'updated' : 'added') . ' successfully.</div>';
@@ -74,7 +74,7 @@ endif; ?>
                     <div class="mb-3">
                         <label class="form-label">VIN *</label>
                         <input type="text" name="vin" class="form-control" maxlength="20" required
-                            value="<?= htmlspecialchars($editData['VIN'] ?? '')?>" <?=$editData ? 'readonly' : ''?>>
+                            value="<?= htmlspecialchars($editData['VIN'] ?? '')?>" <?= $editData ? 'readonly' : '' ?>>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Model Name *</label>
@@ -85,7 +85,7 @@ endif; ?>
                         <label class="form-label">Fuel Type</label>
                         <select name="fuel_type" class="form-select">
                             <?php foreach (['Petrol', 'Diesel', 'Electric', 'Hybrid', 'CNG'] as $f): ?>
-                            <option <?=($editData['Fuel_type'] ?? 'Petrol') === $f ? 'selected' : ''?>>
+                            <option <?=($editData['Fuel_type'] ?? 'Petrol' )===$f ? 'selected' : '' ?>>
                                 <?= $f?>
                             </option>
                             <?php
@@ -95,9 +95,10 @@ endforeach; ?>
                     <div class="mb-3">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select">
-                            <option <?=($editData['Status'] ?? 'Available') === 'Available' ? 'selected' : ''?>>Available
+                            <option <?=($editData['Status'] ?? 'Available' )==='Available' ? 'selected' : '' ?>
+                                >Available
                             </option>
-                            <option <?=($editData['Status'] ?? '') === 'Sold' ? 'selected' : ''?>>Sold</option>
+                            <option <?=($editData['Status'] ?? '' )==='Sold' ? 'selected' : '' ?>>Sold</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -111,8 +112,8 @@ endforeach; ?>
                             <option value="">-- None --</option>
                             <?php $suppliers->data_seek(0);
 while ($s = $suppliers->fetch_assoc()): ?>
-                            <option value="<?= $s['Supplier_ID']?>"
-                                <?=($editData['Supplier_ID'] ?? '') == $s['Supplier_ID'] ? 'selected' : ''?>>
+                            <option value="<?= $s['Supplier_ID']?>" <?=($editData['Supplier_ID'] ?? ''
+                                )==$s['Supplier_ID'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($s['S_Name'])?>
                             </option>
                             <?php
