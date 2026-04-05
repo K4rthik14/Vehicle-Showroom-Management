@@ -213,22 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff;
         }
 
-        .hint-box {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 1rem;
-            font-size: 0.85rem;
-            color: #475569;
-            font-family: 'DM Mono', monospace;
-            border: 1px solid #e2e8f0;
-            line-height: 1.6;
-        }
 
-        .hint-box strong {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.85rem;
-            color: #1e293b;
-        }
 
         .car-illustration {
             font-size: 8rem;
@@ -279,13 +264,7 @@ endif; ?>
                     <button type="submit" class="btn-login">Sign in</button>
                 </form>
 
-                <div class="hint-box mt-4">
-                    <strong>Demo credentials</strong><br>
-                    Admin: admin / <span id="pw1" style="filter:blur(4px);cursor:pointer;"
-                        onclick="this.style.filter='none'">admin123</span><br>
-                    Staff: staff1 / <span id="pw2" style="filter:blur(4px);cursor:pointer;"
-                        onclick="this.style.filter='none'">staff123</span>
-                </div>
+
             </div>
         </div>
     </div>
