@@ -18,7 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($username === '' || $password === '') {
         $loginError = 'Please fill in both username and password.';
-    } else {
+    }
+    else {
         $findUser = $conn->prepare('SELECT * FROM users WHERE username = ?');
         $findUser->bind_param('s', $username);
         $findUser->execute();
@@ -40,142 +41,256 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VSMS - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(circle at top left, #ccfbf1 0%, #e0f2fe 35%, #f8fafc 100%);
+            background: #f8fafc;
             min-height: 100vh;
+            margin: 0;
+        }
+
+        .split-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .split-left {
+            flex: 1;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .split-left {
+                display: flex;
+            }
+        }
+
+        .split-left::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+        }
+
+        .split-left::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 480px;
+        }
+
+        .left-content h1 {
+            font-weight: 800;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .left-content p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        .split-right {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 2rem;
+            background: #ffffff;
         }
 
-        .login-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 2.25rem;
+        .login-container {
             width: 100%;
-            max-width: 430px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 24px 60px rgba(15,23,42,0.14);
+            max-width: 420px;
         }
 
-        .brand-icon {
-            width: 58px;
-            height: 58px;
-            background: linear-gradient(135deg, #14b8a6, #0ea5e9);
-            border-radius: 14px;
+        .brand-icon-mobile {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.7rem;
-            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .brand-icon-mobile-wrapper {
+            display: block;
+        }
+
+        @media (min-width: 992px) {
+            .brand-icon-mobile-wrapper {
+                display: none;
+            }
         }
 
         h2 {
             font-weight: 800;
-            font-size: 1.5rem;
-            color: #0f172a;
+            font-size: 1.75rem;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
         }
 
         .subtitle {
             color: #64748b;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
         }
 
         .form-label {
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #475569;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.4rem;
         }
 
         .form-control {
             border-radius: 10px;
-            border: 1.5px solid #dbe2ea;
-            padding: 0.62rem 0.9rem;
-            font-size: 0.92rem;
-        }
-
-        .form-control:focus {
-            border-color: #0f766e;
-            box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
-        }
-
-        .btn-login {
-            background: linear-gradient(135deg, #0f766e, #0ea5a4);
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.92rem;
-            padding: 0.68rem;
-            color: #fff;
-            width: 100%;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
             transition: all 0.2s;
         }
 
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-login {
+            background: #2563eb;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.8rem;
+            color: #fff;
+            width: 100%;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+
         .btn-login:hover {
+            background: #1d4ed8;
             transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(15,118,110,0.28);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
             color: #fff;
         }
 
         .hint-box {
             background: #f8fafc;
             border-radius: 10px;
-            padding: 0.8rem 0.95rem;
-            font-size: 0.78rem;
+            padding: 1rem;
+            font-size: 0.85rem;
             color: #475569;
             font-family: 'DM Mono', monospace;
             border: 1px solid #e2e8f0;
+            line-height: 1.6;
         }
 
         .hint-box strong {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.8rem;
-            color: #0f172a;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .car-illustration {
+            font-size: 8rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
         }
     </style>
 </head>
+
 <body>
-<div class="login-card">
-    <div class="text-center mb-3">
-        <div class="brand-icon">🚗</div>
-        <h2>VSMS</h2>
-        <p class="subtitle mb-0">Vehicle Showroom Management System</p>
+
+    <div class="split-layout">
+        <div class="split-left">
+            <div class="left-content">
+                <div class="car-illustration">🏎️</div>
+                <h1>Drivr Showroom</h1>
+                <p>Experience the ultimate vehicle showroom management system. Powerful tools, elegant interface,
+                    seamless workflow.</p>
+            </div>
+        </div>
+        <div class="split-right">
+            <div class="login-container">
+                <div class="brand-icon-mobile-wrapper">
+                    <div class="brand-icon-mobile">🚗</div>
+                </div>
+                <h2>Welcome back</h2>
+                <p class="subtitle">Please enter your details to sign in.</p>
+
+                <?php if ($loginError): ?>
+                <div class="alert alert-danger py-2" style="font-size:0.85rem;border-radius:10px;">
+                    <?= htmlspecialchars($loginError)?>
+                </div>
+                <?php
+endif; ?>
+
+                <form method="POST" action="">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Enter your username"
+                            value="<?= htmlspecialchars($_POST['username'] ?? '')?>" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn-login">Sign in</button>
+                </form>
+
+                <div class="hint-box mt-4">
+                    <strong>Demo credentials</strong><br>
+                    Admin: admin / <span id="pw1" style="filter:blur(4px);cursor:pointer;"
+                        onclick="this.style.filter='none'">admin123</span><br>
+                    Staff: staff1 / <span id="pw2" style="filter:blur(4px);cursor:pointer;"
+                        onclick="this.style.filter='none'">staff123</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <?php if ($loginError): ?>
-        <div class="alert alert-danger py-2" style="font-size:0.85rem;border-radius:10px;"><?= htmlspecialchars($loginError) ?></div>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" placeholder="Enter username" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
-        </div>
-
-        <div class="mb-4">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
-        </div>
-
-        <button type="submit" class="btn-login">Sign In</button>
-    </form>
-
-    <div class="hint-box mt-3">
-        <strong>Demo credentials</strong><br>
-        admin / admin123<br>
-        staff1 / staff123
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
