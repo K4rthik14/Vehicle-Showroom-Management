@@ -13,29 +13,30 @@ $loginError = '';
 
 // Handle login form submission.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $emp_id = trim($_POST['emp_id'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if ($username === '' || $password === '') {
-        $loginError = 'Please fill in both username and password.';
+    if ($emp_id === '' || $password === '') {
+        $loginError = 'Please fill in both Employee ID and password.';
     }
     else {
-        $findUser = $conn->prepare('SELECT * FROM users WHERE username = ?');
-        $findUser->bind_param('s', $username);
+        $findUser = $conn->prepare('SELECT u.*, s.Name, s.Designation FROM users u JOIN STAFF s ON u.emp_id = s.Emp_ID WHERE u.emp_id = ?');
+        $findUser->bind_param('s', $emp_id);
         $findUser->execute();
         $user = $findUser->get_result()->fetch_assoc();
 
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
             $_SESSION['emp_id'] = $user['emp_id'];
+            $_SESSION['name'] = $user['Name'];
+            $_SESSION['designation'] = $user['Designation'];
+            $_SESSION['role'] = $user['role'];
 
             header('Location: pages/dashboard.php');
             exit();
         }
 
-        $loginError = 'Invalid username or password.';
+        $loginError = 'Invalid Employee ID or password.';
     }
 }
 ?>
@@ -251,9 +252,10 @@ endif; ?>
 
                 <form method="POST" action="">
                     <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Enter your username"
-                            value="<?= htmlspecialchars($_POST['username'] ?? '')?>" required>
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" name="emp_id" class="form-control" placeholder="e.g. EMP001"
+                            pattern="EMP[0-9]{3,}" minlength="6" value="<?= htmlspecialchars($_POST['emp_id'] ?? '')?>"
+                            required>
                     </div>
 
                     <div class="mb-4">

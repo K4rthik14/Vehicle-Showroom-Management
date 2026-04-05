@@ -560,14 +560,14 @@ endif; ?>
         <div class="sidebar-footer">
             <div class="user-info">
                 <div class="user-avatar">
-                    <?= strtoupper(substr($_SESSION['username'] ?? 'U', 0, 1))?>
+                    <?= strtoupper(substr($_SESSION['name'] ?? 'U', 0, 1))?>
                 </div>
                 <div>
                     <div class="user-name">
-                        <?= htmlspecialchars($_SESSION['username'] ?? 'User')?>
+                        <?= htmlspecialchars($_SESSION['name'] ?? 'User')?>
                     </div>
                     <div class="user-role">
-                        <?= ucfirst($_SESSION['role'] ?? 'staff')?>
+                        <?= htmlspecialchars($_SESSION['designation'] ?? 'Staff')?>
                     </div>
                 </div>
             </div>

@@ -36,7 +36,7 @@ if (isset($_GET['delete']) && isAdmin()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saleId = (int)($_POST['sale_id'] ?? 0);
     $vin = trim($_POST['vin'] ?? '');
-    $staffId = (int)($_POST['emp_id'] ?? 0);
+    $staffId = trim($_POST['emp_id'] ?? '');
     $customerId = (int)($_POST['customer_id'] ?? 0);
     $saleDate = $_POST['sale_date'] ?? date('Y-m-d');
     $saleAmount = (float)($_POST['amount'] ?? 0);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updateSale = $conn->prepare(
                 'UPDATE SALE SET VIN=?, Emp_ID=?, Customer_ID=?, Sale_Date=?, Amount=?, Payment_Method=? WHERE Sale_ID=?'
             );
-            $updateSale->bind_param('siisdsi', $vin, $staffId, $customerId, $saleDate, $saleAmount, $paymentMethod, $saleId);
+            $updateSale->bind_param('ssisdsi', $vin, $staffId, $customerId, $saleDate, $saleAmount, $paymentMethod, $saleId);
             $updateSale->execute();
 
             $messageHtml = renderAlert('success', 'Sale updated.');
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $insertSale = $conn->prepare(
                     'INSERT INTO SALE(VIN, Emp_ID, Customer_ID, Sale_Date, Amount, Payment_Method) VALUES(?, ?, ?, ?, ?, ?)'
                 );
-                $insertSale->bind_param('siisds', $vin, $staffId, $customerId, $saleDate, $saleAmount, $paymentMethod);
+                $insertSale->bind_param('ssisds', $vin, $staffId, $customerId, $saleDate, $saleAmount, $paymentMethod);
                 $insertSale->execute();
 
                 $updatedQuantity = (int)$vehicleInfo['Stock_Quantity'] - 1;
@@ -132,7 +132,7 @@ $vehicleOptions->data_seek(0);
 while ($vehicle = $vehicleOptions->fetch_assoc()):
 ?>
                             <option value="<?= htmlspecialchars($vehicle['VIN'])?>" <?=($editSale['VIN'] ?? ''
-                                )===$vehicle['VIN'] ? 'selected' : '' ?>>
+        ) === $vehicle['VIN'] ? 'selected' : ''?>>
                                 <?= htmlspecialchars($vehicle['Model_Name'])?> (
                                 <?= substr($vehicle['VIN'], -6)?>)
                             </option>
@@ -148,7 +148,7 @@ endwhile; ?>
                             <?php $customers->data_seek(0);
 while ($customer = $customers->fetch_assoc()): ?>
                             <option value="<?= $customer['Customer_ID']?>" <?=($editSale['Customer_ID'] ?? ''
-        ) == $customer['Customer_ID'] ? 'selected' : '' ?>>
+                                )==$customer['Customer_ID'] ? 'selected' : ''?>>
                                 <?= htmlspecialchars($customer['name'])?>
                             </option>
                             <?php
@@ -162,8 +162,8 @@ endwhile; ?>
                             <option value="">-- Select Staff --</option>
                             <?php $staffMembers->data_seek(0);
 while ($staff = $staffMembers->fetch_assoc()): ?>
-                            <option value="<?= $staff['Emp_ID']?>" <?=($editSale['Emp_ID'] ?? '') == $staff['Emp_ID']
-        ? 'selected' : '' ?>>
+                            <option value="<?= $staff['Emp_ID']?>" <?=($editSale['Emp_ID'] ?? '' )==$staff['Emp_ID']
+                                ? 'selected' : ''?>>
                                 <?= htmlspecialchars($staff['Name'])?>
                             </option>
                             <?php
@@ -187,7 +187,7 @@ endwhile; ?>
                         <label class="form-label">Payment Method</label>
                         <select name="payment_method" class="form-select">
                             <?php foreach (['Cash', 'Card', 'UPI'] as $method): ?>
-                            <option <?=($editSale['Payment_Method'] ?? 'Cash') === $method ? 'selected' : '' ?>>
+                            <option <?=($editSale['Payment_Method'] ?? 'Cash' )===$method ? 'selected' : ''?>>
                                 <?= $method?>
                             </option>
                             <?php

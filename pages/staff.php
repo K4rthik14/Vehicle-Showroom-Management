@@ -8,34 +8,35 @@ $pageTitle = 'Staff Management';
 $msg = '';
 
 if (isset($_GET['delete']) && isAdmin()) {
-    $id = (int)$_GET['delete'];
-    $conn->query("DELETE FROM STAFF WHERE Emp_ID=$id");
+    $id = $conn->real_escape_string($_GET['delete']);
+    $conn->query("DELETE FROM STAFF WHERE Emp_ID='$id'");
     $msg = '<div class="alert alert-success alert-dismissible">Staff member deleted.</div>';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = (int)($_POST['emp_id'] ?? 0);
+    $id = trim($_POST['emp_id'] ?? '');
     $name = trim($_POST['name'] ?? '');
     $desig = trim($_POST['designation'] ?? '');
     $contact = trim($_POST['contact'] ?? '');
     $doj = $_POST['doj'] ?? '';
     if ($name) {
-        if ($id) {
+        if ($id !== '') {
             $stmt = $conn->prepare("UPDATE STAFF SET Name=?,Designation=?,Contact=?,DOJ=? WHERE Emp_ID=?");
-            $stmt->bind_param("ssssi", $name, $desig, $contact, $doj, $id);
+            $stmt->bind_param("sssss", $name, $desig, $contact, $doj, $id);
         }
         else {
-            $stmt = $conn->prepare("INSERT INTO STAFF(Name,Designation,Contact,DOJ) VALUES(?,?,?,?)");
+            $stmt = $conn->prepare("INSERT INTO STAFF(Emp_ID, Name, Designation, Contact, DOJ) VALUES('', ?,?,?,?)");
             $stmt->bind_param("ssss", $name, $desig, $contact, $doj);
         }
         $stmt->execute();
-        $msg = '<div class="alert alert-success alert-dismissible">Staff ' . ($id ? 'updated' : 'added') . '.</div>';
+        $msg = '<div class="alert alert-success alert-dismissible">Staff ' . ($id !== '' ? 'updated' : 'added') . '.</div>';
     }
 }
 
 $editData = null;
 if (isset($_GET['edit'])) {
-    $editData = $conn->query("SELECT * FROM STAFF WHERE Emp_ID=" . (int)$_GET['edit'])->fetch_assoc();
+    $editId = $conn->real_escape_string($_GET['edit']);
+    $editData = $conn->query("SELECT * FROM STAFF WHERE Emp_ID='$editId'")->fetch_assoc();
 }
 
 $staff = $conn->query("SELECT * FROM STAFF ORDER BY Emp_ID DESC");
@@ -51,7 +52,11 @@ require_once '../includes/header.php';
             </div>
             <div class="card-body">
                 <form method="POST">
-                    <input type="hidden" name="emp_id" value="<?= $editData['Emp_ID'] ?? 0?>">
+                    <input type="hidden" name="emp_id" value="<?= $editData['Emp_ID'] ?? ''?>">
+                    <div class="mb-2">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" class="form-control" disabled value="<?= $editData['Emp_ID'] ?? 'EMP00X'?>">
+                    </div>
                     <div class="mb-2">
                         <label class="form-label">Full Name *</label>
                         <input type="text" name="name" class="form-control" required

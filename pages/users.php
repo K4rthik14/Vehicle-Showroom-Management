@@ -34,13 +34,12 @@ if (isset($_GET['delete'])) {
 // -------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = (int)($_POST['user_id'] ?? 0);
-    $username = trim($_POST['username'] ?? '');
+    $employeeId = trim($_POST['emp_id'] ?? '');
     $password = $_POST['password'] ?? '';
     $role = $_POST['role'] ?? 'staff';
-    $employeeId = (int)($_POST['emp_id'] ?? 0) ?: null;
 
-    if ($username === '') {
-        $messageHtml = buildAlert('warning', 'Username is required.');
+    if ($employeeId === '') {
+        $messageHtml = buildAlert('warning', 'Linked Staff Member is required.');
     }
     elseif ($userId === 0 && $password === '') {
         $messageHtml = buildAlert('danger', 'Password is required for a new user.');
@@ -49,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($userId > 0) {
             if ($password !== '') {
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-                $updateWithPassword = $conn->prepare('UPDATE users SET username=?, password=?, role=?, emp_id=? WHERE user_id=?');
-                $updateWithPassword->bind_param('sssii', $username, $passwordHash, $role, $employeeId, $userId);
+                $updateWithPassword = $conn->prepare('UPDATE users SET password=?, role=?, emp_id=? WHERE user_id=?');
+                $updateWithPassword->bind_param('sssi', $passwordHash, $role, $employeeId, $userId);
                 $queryOk = $updateWithPassword->execute();
             }
             else {
-                $updateWithoutPassword = $conn->prepare('UPDATE users SET username=?, role=?, emp_id=? WHERE user_id=?');
-                $updateWithoutPassword->bind_param('ssii', $username, $role, $employeeId, $userId);
+                $updateWithoutPassword = $conn->prepare('UPDATE users SET role=?, emp_id=? WHERE user_id=?');
+                $updateWithoutPassword->bind_param('ssi', $role, $employeeId, $userId);
                 $queryOk = $updateWithoutPassword->execute();
             }
 
@@ -65,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         else {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $createUser = $conn->prepare('INSERT INTO users(username, password, role, emp_id) VALUES(?, ?, ?, ?)');
-            $createUser->bind_param('sssi', $username, $passwordHash, $role, $employeeId);
+            $createUser = $conn->prepare('INSERT INTO users(password, role, emp_id) VALUES(?, ?, ?)');
+            $createUser->bind_param('sss', $passwordHash, $role, $employeeId);
 
             $queryOk = $createUser->execute();
             $messageHtml = $queryOk
@@ -104,12 +103,6 @@ require_once '../includes/header.php';
                     <input type="hidden" name="user_id" value="<?= $editUser['user_id'] ?? 0?>">
 
                     <div class="mb-2">
-                        <label class="form-label">Username *</label>
-                        <input type="text" name="username" class="form-control" required
-                            value="<?= htmlspecialchars($editUser['username'] ?? '')?>">
-                    </div>
-
-                    <div class="mb-2">
                         <label class="form-label">Password
                             <?= $editUser ? '(leave blank to keep)' : '*'?>
                         </label>
@@ -119,22 +112,23 @@ require_once '../includes/header.php';
                     <div class="mb-2">
                         <label class="form-label">Role</label>
                         <select name="role" class="form-select">
-                            <option value="admin" <?=($editUser['role'] ?? '' )==='admin' ? 'selected' : ''?>>Admin
+                            <option value="admin" <?=($editUser['role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin
                             </option>
-                            <option value="staff" <?=($editUser['role'] ?? 'staff' )==='staff' ? 'selected' : ''?>
+                            <option value="staff" <?=($editUser['role'] ?? 'staff') === 'staff' ? 'selected' : '' ?>
                                 >Staff</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Linked Staff Member</label>
-                        <select name="emp_id" class="form-select">
+                        <label class="form-label">Linked Staff Member *</label>
+                        <select name="emp_id" class="form-select" required>
                             <option value="">-- None --</option>
                             <?php $staffMembers->data_seek(0);
 while ($staff = $staffMembers->fetch_assoc()): ?>
-                            <option value="<?= $staff['Emp_ID']?>" <?=($editUser['emp_id'] ?? '' )==$staff['Emp_ID']
-                                ? 'selected' : ''?>>
-                                <?= htmlspecialchars($staff['Name'])?>
+                            <option value="<?= $staff['Emp_ID']?>" <?=($editUser['emp_id'] ?? '') === $staff['Emp_ID']
+        ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($staff['Name'])?> (
+                                <?= $staff['Emp_ID']?>)
                             </option>
                             <?php
 endwhile; ?>
@@ -164,7 +158,7 @@ endif; ?>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
+                            <th>Employee ID</th>
                             <th>Role</th>
                             <th>Linked Staff</th>
                             <th>Created</th>
@@ -179,7 +173,7 @@ endif; ?>
                             </td>
                             <td>
                                 <strong>
-                                    <?= htmlspecialchars($user['username'])?>
+                                    <?= htmlspecialchars($user['emp_id'])?>
                                 </strong>
                                 <?= $user['user_id'] == $_SESSION['user_id'] ? ' <span class="badge bg-secondary ms-1" style="font-size:.65rem;">You</span>' : ''?>
                             </td>
